@@ -9,6 +9,7 @@ scripts. May graduate to Rust when complexity warrants it.
 |------------|-------------|
 | `brightness` | Adjust screen backlight via brightnessctl |
 | `gesture` | Handle shell gestures (left, right, up, down) |
+| `keys` | Toggle which-key shortcuts overlay |
 
 ## Usage
 

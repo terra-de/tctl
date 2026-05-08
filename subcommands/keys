@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# tctl keys — toggle the which-key keyboard shortcuts overlay
+set -euo pipefail
+
+DESCRIPTION="Toggle which-key shortcuts overlay"
+
+if [[ "${1:-}" == "--describe" ]]; then
+  echo "$DESCRIPTION"
+  exit 0
+fi
+
+[[ $# -eq 0 ]] || { echo "Usage: tctl keys" >&2; exit 1; }
+
+terrashell ipc call whichkey toggleLeader >/dev/null 2>&1 || true
