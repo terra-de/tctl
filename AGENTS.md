@@ -8,6 +8,7 @@ scripts. May graduate to Rust when complexity warrants it.
 | Subcommand | Description |
 |------------|-------------|
 | `brightness` | Adjust screen backlight via brightnessctl |
+| `gesture` | Handle shell gestures (left, right, up, down) |
 
 ## Usage
 

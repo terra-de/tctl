@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# tctl gesture — handle touchpad/mouse shell gestures
+set -euo pipefail
+
+DESCRIPTION="Handle shell gestures (left, right, up, down)"
+
+if [[ "${1:-}" == "--describe" ]]; then
+  echo "$DESCRIPTION"
+  exit 0
+fi
+
+usage() {
+  echo "Usage: tctl gesture <left|right|up|down>" >&2
+  exit 1
+}
+
+[[ $# -eq 1 ]] || usage
+
+case "$1" in
+  left)   direction="swipeLeft" ;;
+  right)  direction="swipeRight" ;;
+  up)     direction="swipeUp" ;;
+  down)   direction="swipeDown" ;;
+  *)      usage ;;
+esac
+
+terrashell ipc call shellgestures "$direction" >/dev/null 2>&1 || true
