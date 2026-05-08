@@ -51,5 +51,5 @@ if [[ -z "$value" ]]; then
   exit 0
 fi
 
-qs ipc call brightness setLevel "$value" >/dev/null 2>&1 || true
-qs ipc call brightness refresh >/dev/null 2>&1 || true
+terrashell ipc call brightness setLevel "$value" >/dev/null 2>&1 || true
+terrashell ipc call brightness refresh >/dev/null 2>&1 || true
