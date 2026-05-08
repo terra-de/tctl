@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+TCTL_DIR="/usr/share/tctl"
+SUBCMD_DIR="$TCTL_DIR/subcommands"
+
+if [[ $# -lt 1 ]]; then
+  echo "Usage: tctl <subcommand> [args...]" >&2
+  echo "" >&2
+  echo "Subcommands:" >&2
+  for cmd in "$SUBCMD_DIR"/*; do
+    if [ -x "$cmd" ]; then
+      name="$(basename "$cmd")"
+      desc="$($cmd --describe 2>/dev/null || echo "")"
+      printf "  %-20s %s\n" "$name" "$desc"
+    fi
+  done
+  exit 1
+fi
+
+SUBCMD="$1"
+shift
+
+SUBCMD_PATH="$SUBCMD_DIR/$SUBCMD"
+if [ ! -x "$SUBCMD_PATH" ]; then
+  echo "tctl: unknown subcommand '$SUBCMD'" >&2
+  exit 1
+fi
+
+exec "$SUBCMD_PATH" "$@"

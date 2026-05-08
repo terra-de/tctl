@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+# tctl brightness — control backlight brightness via brightnessctl
+set -euo pipefail
+
+DESCRIPTION="Adjust screen brightness (up, down, set)"
+
+if [[ "${1:-}" == "--describe" ]]; then
+  echo "$DESCRIPTION"
+  exit 0
+fi
+
+if ! command -v brightnessctl >/dev/null 2>&1; then
+  echo "tctl brightness: brightnessctl is required" >&2
+  exit 1
+fi
+
+usage() {
+  echo "Usage: tctl brightness up [step] | down [step] | set <0-100>" >&2
+  exit 1
+}
+
+if [[ $# -lt 1 ]]; then
+  usage
+fi
+
+step=10
+if [[ $# -ge 2 ]]; then
+  step="$2"
+fi
+
+case "$1" in
+  up)
+    brightnessctl set "+${step}%" >/dev/null
+    ;;
+  down)
+    brightnessctl set "${step}%-" >/dev/null
+    ;;
+  set)
+    if [[ $# -lt 2 ]]; then
+      usage
+    fi
+    brightnessctl set "$2%" >/dev/null
+    ;;
+  *)
+    usage
+    ;;
+esac
+
+value=$(brightnessctl -m | awk -F, '{print $4}' | tr -d '%')
+if [[ -z "$value" ]]; then
+  exit 0
+fi
+
+qs ipc call brightness setLevel "$value" >/dev/null 2>&1 || true
+qs ipc call brightness refresh >/dev/null 2>&1 || true
