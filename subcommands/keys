@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# tctl keys — toggle which-key overlay, or dump effective keys config
+# tctl keys — toggle the which-key keyboard shortcuts overlay
 set -euo pipefail
 
 DESCRIPTION="Toggle which-key shortcuts overlay"
@@ -9,25 +9,6 @@ if [[ "${1:-}" == "--describe" ]]; then
   exit 0
 fi
 
-case "${1:-}" in
-  "")
-    terrashell ipc call whichkey toggleLeader >/dev/null 2>&1 || true
-    ;;
-  dump)
-    USER_KEYS="$HOME/.config/terra/keys.json"
-    DEFAULT_KEYS="/usr/share/terrashell/keys-defaults.json"
+[[ $# -eq 0 ]] || { echo "Usage: tctl keys" >&2; exit 1; }
 
-    if [ -f "$USER_KEYS" ]; then
-      cat "$USER_KEYS"
-    elif [ -f "$DEFAULT_KEYS" ]; then
-      cat "$DEFAULT_KEYS"
-    else
-      echo "tctl keys: no keys config found" >&2
-      exit 1
-    fi
-    ;;
-  *)
-    echo "Usage: tctl keys [dump]" >&2
-    exit 1
-    ;;
-esac
+terrashell ipc call whichkey toggleLeader >/dev/null 2>&1 || true

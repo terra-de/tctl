@@ -9,8 +9,8 @@ scripts. May graduate to Rust when complexity warrants it.
 |------------|-------------|
 | `brightness` | Adjust screen backlight via brightnessctl |
 | `gesture` | Handle shell gestures (left, right, up, down) |
-| `keys` | Toggle which-key shortcuts overlay, or dump keys config with `dump` |
-| `keys dump` | Output effective keys config (user file or shipped defaults) |
+| `keys` | Toggle which-key shortcuts overlay |
+| `dump` | Dump configuration (keys config with `tctl dump keys`) |
 
 ## Usage
 

@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# tctl dump — dump configuration for various subsystems
+set -euo pipefail
+
+DESCRIPTION="Dump configuration (keys, ...)"
+
+if [[ "${1:-}" == "--describe" ]]; then
+  echo "$DESCRIPTION"
+  exit 0
+fi
+
+case "${1:-}" in
+  keys)
+    USER_KEYS="$HOME/.config/terra/keys.json"
+    DEFAULT_KEYS="/usr/share/terrashell/keys-defaults.json"
+
+    if [ -f "$USER_KEYS" ]; then
+      cat "$USER_KEYS"
+    elif [ -f "$DEFAULT_KEYS" ]; then
+      cat "$DEFAULT_KEYS"
+    else
+      echo "tctl dump: no keys config found" >&2
+      exit 1
+    fi
+    ;;
+  *)
+    echo "Usage: tctl dump <keys>" >&2
+    exit 1
+    ;;
+esac
