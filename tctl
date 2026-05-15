@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-TCTL_DIR="${TCTL_DEV_DIR:-/usr/share/tctl}"
+TCTL_DIR="${TCTL_PATH:-/usr/share/tctl}"
 SUBCMD_DIR="$TCTL_DIR/subcommands"
 
 if [[ $# -lt 1 ]]; then

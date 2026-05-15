@@ -13,8 +13,8 @@ MODE="${1:-}"
 SUBMAP="${2:-}"
 
 # Resolve terrashell binary — dev dir override, else system PATH
-if [[ -n "${TERRASHELL_DEV_DIR:-}" ]]; then
-  TERRASHELL_BIN="$TERRASHELL_DEV_DIR/terrashell"
+if [[ -n "${TERRASHELL_PATH:-}" ]]; then
+  TERRASHELL_BIN="$TERRASHELL_PATH/terrashell"
 else
   TERRASHELL_BIN="terrashell"
 fi

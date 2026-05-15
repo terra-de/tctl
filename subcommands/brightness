@@ -51,5 +51,12 @@ if [[ -z "$value" ]]; then
   exit 0
 fi
 
-terrashell ipc call brightness setLevel "$value" >/dev/null 2>&1 || true
-terrashell ipc call brightness refresh >/dev/null 2>&1 || true
+# Resolve terrashell binary — dev dir override, else system PATH
+if [[ -n "${TERRASHELL_PATH:-}" ]]; then
+  TERRASHELL_BIN="$TERRASHELL_PATH/terrashell"
+else
+  TERRASHELL_BIN="terrashell"
+fi
+
+"$TERRASHELL_BIN" ipc call brightness setLevel "$value" >/dev/null 2>&1 || true
+"$TERRASHELL_BIN" ipc call brightness refresh >/dev/null 2>&1 || true
