@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# tctl osk — toggle, show, hide the on-screen keyboard
+set -euo pipefail
+
+DESCRIPTION="Toggle/show/hide on-screen keyboard"
+
+if [[ "${1:-}" == "--describe" ]]; then
+  echo "$DESCRIPTION"
+  exit 0
+fi
+
+source "$(dirname "$0")/.helpers.sh"
+
+usage() {
+  echo "Usage: tctl osk <toggle|show|hide>" >&2
+  exit 1
+}
+
+[[ $# -eq 1 ]] || usage
+
+case "$1" in
+  toggle) action="toggle" ;;
+  show)   action="show" ;;
+  hide)   action="hide" ;;
+  *)      usage ;;
+esac
+
+"$TERRASHELL_BIN" ipc call keyboard "$action" >/dev/null 2>&1 || true

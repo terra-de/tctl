@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# tctl config — reload Terra DE configuration
+set -euo pipefail
+
+DESCRIPTION="Reload Terra DE configuration"
+
+if [[ "${1:-}" == "--describe" ]]; then
+  echo "$DESCRIPTION"
+  exit 0
+fi
+
+source "$(dirname "$0")/.helpers.sh"
+
+usage() {
+  echo "Usage: tctl config reload" >&2
+  exit 1
+}
+
+[[ $# -eq 1 ]] || usage
+
+case "$1" in
+  reload)
+    "$TERRASHELL_BIN" ipc call config reload >/dev/null 2>&1 || true
+    ;;
+  *)
+    usage
+    ;;
+esac

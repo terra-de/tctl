@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# tctl emoji — toggle, open, close the emoji picker
+set -euo pipefail
+
+DESCRIPTION="Toggle/open/close emoji picker"
+
+if [[ "${1:-}" == "--describe" ]]; then
+  echo "$DESCRIPTION"
+  exit 0
+fi
+
+source "$(dirname "$0")/.helpers.sh"
+
+usage() {
+  echo "Usage: tctl emoji <toggle|open|close>" >&2
+  exit 1
+}
+
+[[ $# -eq 1 ]] || usage
+
+case "$1" in
+  toggle) action="toggle" ;;
+  open)   action="open" ;;
+  close)  action="close" ;;
+  *)      usage ;;
+esac
+
+"$TERRASHELL_BIN" ipc call emoji "$action" >/dev/null 2>&1 || true

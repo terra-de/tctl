@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# tctl bitwarden — Bitwarden vault operations (password, totp, username, lock, logout)
+set -euo pipefail
+
+DESCRIPTION="Bitwarden vault pickers and actions"
+
+if [[ "${1:-}" == "--describe" ]]; then
+  echo "$DESCRIPTION"
+  exit 0
+fi
+
+source "$(dirname "$0")/.helpers.sh"
+
+usage() {
+  echo "Usage: tctl bitwarden <password|totp|username|lock|logout>" >&2
+  exit 1
+}
+
+[[ $# -eq 1 ]] || usage
+
+case "$1" in
+  password) target="togglePassword" ;;
+  totp)     target="toggleTotp" ;;
+  username) target="toggleUsername" ;;
+  lock)     target="lock" ;;
+  logout)   target="logout" ;;
+  *)        usage ;;
+esac
+
+"$TERRASHELL_BIN" ipc call bitwarden "$target" >/dev/null 2>&1 || true
