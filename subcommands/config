@@ -21,6 +21,7 @@ usage() {
 case "$1" in
   reload)
     "$TERRASHELL_BIN" ipc call config reload >/dev/null 2>&1 || true
+    hyprctl reload >/dev/null 2>&1 || true
     ;;
   *)
     usage
