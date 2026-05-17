@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # tctl osk — toggle, show, hide the on-screen keyboard
+# Manages wvkbd-deskintl directly via signals + hyprctl dispatch exec
 set -euo pipefail
 
 DESCRIPTION="Toggle/show/hide on-screen keyboard"
@@ -9,8 +10,6 @@ if [[ "${1:-}" == "--describe" ]]; then
   exit 0
 fi
 
-source "$(dirname "$0")/.helpers.sh"
-
 usage() {
   echo "Usage: tctl osk <toggle|show|hide>" >&2
   exit 1
@@ -19,10 +18,20 @@ usage() {
 [[ $# -eq 1 ]] || usage
 
 case "$1" in
-  toggle) action="toggle" ;;
-  show)   action="show" ;;
-  hide)   action="hide" ;;
-  *)      usage ;;
+  show)
+    pkill -USR2 wvkbd-deskintl 2>/dev/null || hyprctl dispatch 'hl.dsp.exec_cmd("wvkbd-deskintl --hidden")' >/dev/null 2>&1 || true
+    ;;
+  hide)
+    pkill -USR1 wvkbd-deskintl 2>/dev/null || true
+    ;;
+  toggle)
+    if pgrep -x wvkbd-deskintl >/dev/null 2>&1; then
+      pkill -USR1 wvkbd-deskintl 2>/dev/null || true
+    else
+      hyprctl dispatch 'hl.dsp.exec_cmd("wvkbd-deskintl --hidden")' >/dev/null 2>&1 || true
+    fi
+    ;;
+  *)
+    usage
+    ;;
 esac
-
-"$TERRASHELL_BIN" ipc call keyboard "$action" >/dev/null 2>&1 || true

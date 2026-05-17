@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# tctl binds — list all registered Hyprland binds (JSON)
+set -euo pipefail
+
+DESCRIPTION="List Hyprland binds in JSON format"
+
+if [[ "${1:-}" == "--describe" ]]; then
+  echo "$DESCRIPTION"
+  exit 0
+fi
+
+usage() {
+  echo "Usage: tctl binds <list>" >&2
+  exit 1
+}
+
+[[ $# -eq 1 ]] || usage
+
+case "$1" in
+  list)
+    exec hyprctl binds -j
+    ;;
+  *)
+    usage
+    ;;
+esac

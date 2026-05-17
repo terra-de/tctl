@@ -19,6 +19,7 @@ Subcommands that call `terrashell` IPC source `.helpers.sh`, which resolves
 | Subcommand | Actions | Description |
 |------------|---------|-------------|
 | `appdrawer` | `toggle`, `open`, `close` | App drawer |
+| `binds` | `list` | List Hyprland binds in JSON format |
 | `bitwarden` | `password`, `totp`, `username`, `lock`, `logout` | Bitwarden vault pickers |
 | `brightness` | `up [step]`, `down [step]`, `set <0-100>` | Screen backlight |
 | `clipboard` | `toggle`, `open`, `close` | Clipboard history picker |
@@ -29,7 +30,9 @@ Subcommands that call `terrashell` IPC source `.helpers.sh`, which resolves
 | `gesture` | `left`, `right`, `up`, `down` | Shell touchpad gestures |
 | `keys` | `show <submap>`, `dismiss`, (no arg: toggle leader) | Which-key shortcuts overlay |
 | `nerdfont` | `toggle`, `open`, `close` | Nerd Font icon picker |
-| `osk` | `toggle`, `show`, `hide` | On-screen keyboard (wvkbd) |
+| `osk` | `toggle`, `show`, `hide` | On-screen keyboard (wvkbd, direct management) |
+| `power` | `lock`, `suspend`, `hibernate`, `logout`, `reboot`, `shutdown` | System power actions |
+| `workspace` | `activate <id>`, `rename <id> <name>` | Workspace operations |
 
 ## Usage
 
@@ -42,11 +45,38 @@ tctl appdrawer toggle
 tctl bitwarden password
 tctl config reload
 tctl keys show leader
+tctl workspace activate 3
+tctl workspace rename 3 "dev"
+tctl power logout
+tctl power shutdown
+tctl binds list
 ```
+
+## Hyprland Dispatch Format
+
+Since Terra DE uses a Lua Hyprland config (`terra-hyprland`), all `hyprctl dispatch` calls
+must pass literal Lua dispatcher strings. Keyword-style dispatches do NOT work.
+
+```bash
+# Correct — Lua string format:
+hyprctl dispatch 'hl.dsp.focus({ workspace = 1 })'
+hyprctl dispatch 'hl.dsp.exit()'
+hyprctl dispatch 'hl.dsp.workspace.rename({ workspace_id = 1, name = "work" })'
+hyprctl dispatch 'hl.dsp.exec_cmd("wvkbd-deskintl --hidden")'
+hyprctl dispatch 'hl.dsp.submap("reset")'
+hyprctl dispatch 'hl.dsp.focus({ direction = "left" })'
+
+# Wrong — keyword-style does NOT work with Lua config:
+# hyprctl dispatch workspace 1
+# hyprctl dispatch exit
+```
+
+Non-dispatch `hyprctl` commands (reload, binds -j, layers, etc.) still work as normal.
 
 ## Adding a new subcommand
 
 1. Create an executable script at `subcommands/<name>`
 2. Support `--describe` (prints a one-line description for `tctl` help)
-3. If it calls terrashell IPC, source `subcommands/.helpers.sh` to resolve `TERRASHELL_BIN`
-4. Register the description in the table above
+3. If calling Hyprland dispatchers, use the Lua string format: `hyprctl dispatch 'hl.dsp.<name>(<args>)'`
+4. If it calls terrashell IPC, source `subcommands/.helpers.sh` to resolve `TERRASHELL_BIN`
+5. Register the description in the table above

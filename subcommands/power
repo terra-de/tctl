@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+# tctl power — system power actions
+set -euo pipefail
+
+DESCRIPTION="System power actions (lock, suspend, hibernate, logout, reboot, shutdown)"
+
+if [[ "${1:-}" == "--describe" ]]; then
+  echo "$DESCRIPTION"
+  exit 0
+fi
+
+usage() {
+  echo "Usage: tctl power <lock|suspend|hibernate|logout|reboot|shutdown>" >&2
+  exit 1
+}
+
+dsp() {
+  hyprctl dispatch "hl.dsp.exec_cmd(\"$@\")"
+}
+
+[[ $# -eq 1 ]] || usage
+
+case "$1" in
+  lock)
+    loginctl lock-session
+    ;;
+  suspend)
+    systemctl suspend
+    ;;
+  hibernate)
+    systemctl hibernate
+    ;;
+  logout)
+    dsp hyprshutdown
+    ;;
+  reboot)
+    dsp hyprshutdown --post-cmd "systemctl reboot" --top-label "Rebooting..."
+    ;;
+  shutdown)
+    dsp hyprshutdown --post-cmd "systemctl poweroff" --top-label "Shutting down..."
+    ;;
+  *)
+    usage
+    ;;
+esac

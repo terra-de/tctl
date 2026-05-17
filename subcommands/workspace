@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# tctl workspace — workspace operations (activate, rename)
+set -euo pipefail
+
+DESCRIPTION="Workspace operations (activate, rename)"
+
+if [[ "${1:-}" == "--describe" ]]; then
+  echo "$DESCRIPTION"
+  exit 0
+fi
+
+usage() {
+  echo "Usage: tctl workspace <activate|rename> [args...]" >&2
+  exit 1
+}
+
+[[ $# -ge 1 ]] || usage
+
+ACTION="$1"
+shift
+
+case "$ACTION" in
+  activate)
+    [[ $# -eq 1 ]] || { echo "Usage: tctl workspace activate <id>" >&2; exit 1; }
+    hyprctl dispatch "hl.dsp.focus({ workspace = $1 })" >/dev/null 2>&1 || true
+    ;;
+  rename)
+    [[ $# -eq 2 ]] || { echo "Usage: tctl workspace rename <id> <name>" >&2; exit 1; }
+    hyprctl dispatch "hl.dsp.workspace.rename({ workspace_id = $1, name = \"$2\" })" >/dev/null 2>&1 || true
+    ;;
+  *)
+    usage
+    ;;
+esac
