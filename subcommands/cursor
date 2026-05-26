@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+# tctl cursor — set hyprcursor theme or show info
+set -euo pipefail
+
+DESCRIPTION="Set hyprcursor theme for Wayland (set, info)"
+
+if [[ "${1:-}" == "--describe" ]]; then
+  echo "$DESCRIPTION"
+  exit 0
+fi
+
+usage() {
+  echo "Usage: tctl cursor set <theme> [size]" >&2
+  echo "       tctl cursor info" >&2
+  exit 1
+}
+
+# ── Paths ──────────────────────────────────────────────────────────────────
+CACHE_DIR="$HOME/.cache/terra/cursor"
+PREFS="$HOME/.config/terra/hyprland/preferences.json"
+PALETTE="$HOME/.config/terra/palette.json"
+
+# ── Subcommands ────────────────────────────────────────────────────────────
+
+cmd_set() {
+  local theme="$1" size="${2:-24}"
+
+  [[ -n "$theme" ]] || usage
+
+  hyprctl setcursor "$theme" "$size"
+
+  if [[ -f "$PREFS" ]]; then
+    jq ".cursor.theme = \"$theme\" | .cursor.size = $size |
+        .env.HYPRCURSOR_THEME = \"$theme\" | .env.HYPRCURSOR_SIZE = \"$size\"" \
+      "$PREFS" > "${PREFS}.tmp" && mv "${PREFS}.tmp" "$PREFS"
+  fi
+
+  # Update local cache for tctl cursor info
+  mkdir -p "$CACHE_DIR"
+  echo "$theme" > "$CACHE_DIR/last_theme"
+  echo "$size" > "$CACHE_DIR/last_size"
+}
+
+cmd_info() {
+  echo "Cursor info:"
+  echo ""
+
+  if [[ -f "$CACHE_DIR/last_theme" ]]; then
+    echo "  Active theme: $(cat "$CACHE_DIR/last_theme")"
+    echo "  Size:         $(cat "$CACHE_DIR/last_size" 2>/dev/null || echo "?")"
+  else
+    echo "  Active theme: (none set)"
+  fi
+
+  echo ""
+  echo "  Installed terra themes:"
+  local count=0
+  for d in "$HOME/.local/share/icons/oreo_terra_"*/; do
+    if [[ -d "$d" ]]; then
+      echo "    $(basename "$d")"
+      count=$((count + 1))
+    fi
+  done
+  [[ $count -eq 0 ]] && echo "    (none)"
+}
+
+# ── Dispatch ───────────────────────────────────────────────────────────────
+
+case "${1:-}" in
+  set)    shift; cmd_set "$@" ;;
+  info)   cmd_info ;;
+  *)      usage ;;
+esac

@@ -32,6 +32,7 @@ Subcommands that call `terrashell` IPC source `.helpers.sh`, which resolves
 | `nerdfont` | `toggle`, `open`, `close` | Nerd Font icon picker |
 | `osk` | `toggle`, `show`, `hide` | On-screen keyboard (wvkbd, direct management) |
 | `power` | `lock`, `suspend`, `hibernate`, `logout`, `reboot`, `shutdown` | System power actions |
+| `cursor` | `set <theme> [size]`, `info` | Set hyprcursor theme for Wayland; no terratheme knowledge |
 | `workspace` | `activate <id>`, `rename <id> <name>` | Workspace operations |
 
 ## Usage
@@ -50,6 +51,10 @@ tctl workspace rename 3 "dev"
 tctl power logout
 tctl power shutdown
 tctl binds list
+
+# Cursor
+tctl cursor set oreo_terra_abc123 32
+tctl cursor info
 ```
 
 ## Hyprland Dispatch Format
