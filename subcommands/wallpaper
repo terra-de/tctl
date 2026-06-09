@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# tctl wallpaper — set wallpaper and generate palette via terratheme
+set -euo pipefail
+
+DESCRIPTION="Set wallpaper and generate palette (set)"
+
+if [[ "${1:-}" == "--describe" ]]; then
+  echo "$DESCRIPTION"
+  exit 0
+fi
+
+usage() {
+  echo "Usage: tctl wallpaper set <path> [--mode dark|light]" >&2
+  exit 1
+}
+
+cmd_set() {
+  local path="" mode="auto"
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --mode) mode="${2:-auto}"; shift 2 ;;
+      *) path="$1"; shift ;;
+    esac
+  done
+  [[ -n "$path" ]] || usage
+  exec terratheme set "$path" --mode "$mode"
+}
+
+case "${1:-}" in
+  set) shift; cmd_set "$@" ;;
+  *)   usage ;;
+esac

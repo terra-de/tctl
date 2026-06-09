@@ -33,6 +33,7 @@ Subcommands that call `terrashell` IPC source `.helpers.sh`, which resolves
 | `osk` | `toggle`, `show`, `hide` | On-screen keyboard (wvkbd, direct management) |
 | `power` | `lock`, `suspend`, `hibernate`, `logout`, `reboot`, `shutdown` | System power actions |
 | `cursor` | `set <theme> [size]`, `info` | Set hyprcursor theme for Wayland; no terratheme knowledge |
+| `wallpaper` | `set <path> [--mode dark\|light]` | Set wallpaper and generate palette via terratheme |
 | `workspace` | `activate <id>`, `rename <id> <name>` | Workspace operations |
 
 ## Usage
@@ -55,6 +56,9 @@ tctl binds list
 # Cursor
 tctl cursor set oreo_terra_abc123 32
 tctl cursor info
+
+# Wallpaper
+tctl wallpaper set ~/Pictures/wallpapers/wallhaven-3q5g5v.jpg --mode dark
 ```
 
 ## Hyprland Dispatch Format
