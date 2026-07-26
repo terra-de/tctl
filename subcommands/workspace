@@ -28,7 +28,7 @@ case "$ACTION" in
     ;;
   rename)
     [[ $# -eq 2 ]] || { echo "Usage: tctl workspace rename <id> <name>" >&2; exit 1; }
-    hyprctl renameworkspace "$1" "$2" >/dev/null 2>&1 || true
+    hyprctl dispatch "hl.dsp.workspace.rename({ workspace = $1, name = \"$2\" })" >/dev/null 2>&1 || true
     ;;
   open-rename-panel)
     "$TERRASHELL_BIN" ipc call workspace openRenamePanel >/dev/null 2>&1 || true
