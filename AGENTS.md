@@ -30,6 +30,7 @@ Subcommands that call `terrashell` IPC source `.helpers.sh`, which resolves
 | `gesture` | `left`, `right`, `up`, `down` | Shell touchpad gestures |
 | `keys` | `show <submap>`, `dismiss`, (no arg: toggle leader) | Which-key shortcuts overlay |
 | `nerdfont` | `toggle`, `open`, `close` | Nerd Font icon picker |
+| `notifications` | `toggle`, `open`, `close` | Notification panel |
 | `osk` | `toggle`, `show`, `hide`, `status` | On-screen keyboard (wvkbd, direct management) |
 | `power` | `lock`, `suspend`, `hibernate`, `logout`, `reboot`, `shutdown` | System power actions |
 | `cursor` | `set <theme> [size]`, `info` | Set hyprcursor theme for Wayland; no terratheme knowledge |
@@ -43,6 +44,7 @@ tctl brightness up 5
 tctl brightness down 10
 tctl brightness set 50
 tctl osk toggle
+tctl notifications toggle
 tctl appdrawer toggle
 tctl bitwarden password
 tctl config reload
